@@ -49,7 +49,7 @@ jobs:
             AR=$NDK_TOOLCHAIN/llvm-ar \
             STRIP=$NDK_TOOLCHAIN/llvm-strip
 
-            - name: Diagnose sound PIC relocations
+      - name: Diagnose sound PIC relocations
         run: |
           echo "=== Finding libsa2_game.a ==="
           find . -name "libsa2_game.a" -print
