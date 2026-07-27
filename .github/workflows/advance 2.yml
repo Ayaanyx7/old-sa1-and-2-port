@@ -48,6 +48,38 @@ jobs:
             CXX=$NDK_TOOLCHAIN/aarch64-linux-android24-clang++ \
             AR=$NDK_TOOLCHAIN/llvm-ar \
             STRIP=$NDK_TOOLCHAIN/llvm-strip
+
+            - name: Diagnose sound PIC relocations
+        run: |
+          echo "=== Finding libsa2_game.a ==="
+          find . -name "libsa2_game.a" -print
+
+          echo "=== Inspecting archive members ==="
+          LIB=$(find . -name "libsa2_game.a" -print -quit)
+          echo "Using: $LIB"
+
+          $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar t "$LIB" \
+            | grep -E 'sound_data|mus_game_over|se_144|se_145|voice__announcer' \
+            | head -100
+
+          echo "=== Extracting relevant objects ==="
+          mkdir -p /tmp/sound-debug
+          cd /tmp/sound-debug
+          $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar x "$GITHUB_WORKSPACE/$LIB" \
+            sound_data.o mus_game_over.o se_144.o se_145.o \
+            voice__announcer__tails.o voice__announcer__sonic.o \
+            voice__announcer__sonic_advance_2.o \
+            voice__announcer__knuckles.o \
+            voice__announcer__go.o \
+            voice__announcer__cream.o 2>/dev/null || true
+
+          echo "=== Relocations ==="
+          for f in *.o; do
+            echo "----- $f -----"
+            $ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf -r "$f" \
+              | grep -E 'ABS64|voicegroup|R_AARCH64' || true
+          done
+          
       - name: Build libagbsyscall
         run: |
          cd libagbsyscall
