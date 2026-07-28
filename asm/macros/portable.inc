@@ -1,16 +1,22 @@
 .macro mSectionRodata
-#if defined(__ANDROID__)
-  .data              //  Safe: Forces pointers into the read-write section
-#elif (!CPU_ARCH_X86 && defined(__APPLE__))
+#if (!CPU_ARCH_X86 && defined(__APPLE__))
   .section __DATA,__data
 #else
-  .section .rodata
+  .section .rodata    // Put it back to its correct GBA-intended layout
 #endif
 .endm
 
-// Used so that we can have cross platform (32bit or 64bit) pointers
+// Used so that we can have cross-platform (32-bit or 64-bit) pointers
+// FIX: Force data-relative declarations to convert text relocations into clean data relocations
 .macro mPtr value
-#if defined(__aarch64__) || defined(__x86_64__)
+#if defined(__ANDROID__)
+    // Explicitly emit a data-relative symbol reference that the Android linker can dynamically shift
+    .data
+    .align 3
+    1: .quad \value
+    .section .rodata
+    .quad 1b
+#elif defined(__aarch64__) || defined(__x86_64__)
     .quad \value
 #elif defined(__mips__)
     .4byte \value
