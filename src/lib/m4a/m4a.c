@@ -82,45 +82,28 @@ void MPlayFadeOut(struct MP2KPlayerState *mplayInfo, u16 speed)
     }
 }
 
-void m4aSongNumStart(u16 n)
+void m4aSoundInit(void)
 {
-    const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
-    
-    // 🛡️ SAFEGUARD 1: Make sure the index isn't pulling from a broken array slot
-    if (!songTable) return;
+    s32 i;
+#if PLATFORM_GBA
+    CpuCopy32((void *)((s32)SoundMainRAM & ~1), SoundMainRAM_Buffer, sizeof(SoundMainRAM_Buffer));
+#endif
 
-    const struct Song *song = &songTable[n];
-    
-    // 🛡️ SAFEGUARD 2: If the song or its header address is completely blank, abort!
-    if (!song || !(song->header)) return;
+    SoundInit(&gSoundInfo);
+    MPlayExtender(gCgbChans);
+    m4aSoundMode(DEFAULT_SOUND_MODE);
 
-    const struct MusicPlayer *mplay = &mplayTable[song->ms];
-    if (!mplay || !(mplay->info)) return;
-
-    MPlayStart(mplay->info, song->header);
-}
-
-void m4aSongNumStartOrChange(u16 n)
-{
-    const struct MusicPlayer *mplayTable = gMPlayTable;
-    const struct Song *songTable = gSongTable;
-    
-    if (!songTable) return;
-
-    const struct Song *song = &songTable[n];
-    
-    if (!song || !(song->header)) return;
-
-    const struct MusicPlayer *mplay = &mplayTable[song->ms];
-    if (!mplay || !(mplay->info)) return;
-
-    if (mplay->info->songHeader != song->header) {
-        MPlayStart(mplay->info, song->header);
-    } else {
-        if ((mplay->info->status & MUSICPLAYER_STATUS_TRACK) == 0 || (mplay->info->status & MUSICPLAYER_STATUS_PAUSE)) {
-            MPlayStart(mplay->info, song->header);
+    for (i = 0; i < NUM_MUSIC_PLAYERS; i++) {
+        struct MP2KPlayerState *mplayInfo = gMPlayTable[i].info;
+        
+        // 🛡️ CRASH SAFEGUARD: Skip any broken, unaligned, or missing player tables
+        if (!mplayInfo) {
+            continue;
         }
+
+        MPlayOpen(mplayInfo, gMPlayTable[i].track, gMPlayTable[i].numTracks);
+        mplayInfo->checkSongPriority = gMPlayTable[i].unk_A;
+        mplayInfo->memAccArea = gMPlayMemAccArea;
     }
 }
 
