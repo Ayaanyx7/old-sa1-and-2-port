@@ -1,5 +1,7 @@
 .macro mSectionRodata
-#if (!CPU_ARCH_X86 && defined(__APPLE__)) // On macos, native compilation uses this name for the rodata section
+#if defined(__ANDROID__)
+  .data              //  Safe: Forces pointers into the read-write section
+#elif (!CPU_ARCH_X86 && defined(__APPLE__))
   .section __DATA,__data
 #else
   .section .rodata
