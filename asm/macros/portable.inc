@@ -1,7 +1,7 @@
 .macro mSectionRodata
 #if defined(__ANDROID__)
   //  This tells the compiler it is code/data that can be adjusted for -fPIC
-  .section .data.rel.ro,"aw",@progbits
+  .section .data.rel.ro,"aw",%progbits
 #elif (!CPU_ARCH_X86 && defined(__APPLE__)) 
   .section __DATA,__data
 #else
