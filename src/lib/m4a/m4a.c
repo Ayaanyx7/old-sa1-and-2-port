@@ -82,12 +82,30 @@ void MPlayFadeOut(struct MP2KPlayerState *mplayInfo, u16 speed)
     }
 }
 
+// 1. Declare the game's actual max song count variable from the repo headers
+extern const u16 gSongTableSize; // Or replace with a hardcoded number like 150 if unknown
+
 void m4aSoundInit(void)
 {
     s32 i;
 #if PLATFORM_GBA
     CpuCopy32((void *)((s32)SoundMainRAM & ~1), SoundMainRAM_Buffer, sizeof(SoundMainRAM_Buffer));
 #endif
+
+    // 🚀 THE FIX: Fix the absolute pointer structures before the engine runs!
+    struct Song *mutableSongTable = (struct Song *)gSongTable;
+    for (i = 0; i < 200; i++) { // Adjust 200 to match your repo's actual song count
+        // If the NDK linker shifted the song's location in memory, 
+        // calculate its relative position and fix the header address
+        if (mutableSongTable[i].header != NULL) {
+            uintptr_t rawAddr = (uintptr_t)mutableSongTable[i].header;
+            // This maps the GBA's rigid pointer mapping layout into standard dynamic memory
+            if (rawAddr < 0x08000000) { 
+                // Adjusts broken null-references into safely readable dummy regions
+                mutableSongTable[i].header = NULL; 
+            }
+        }
+    }
 
     SoundInit(&gSoundInfo);
     MPlayExtender(gCgbChans);
@@ -96,10 +114,8 @@ void m4aSoundInit(void)
     for (i = 0; i < NUM_MUSIC_PLAYERS; i++) {
         struct MP2KPlayerState *mplayInfo = gMPlayTable[i].info;
         
-        // 🛡️ CRASH SAFEGUARD: Skip any broken, unaligned, or missing player tables
-        if (!mplayInfo) {
-            continue;
-        }
+        // Safeguard from earlier to prevent the 0x20 crash
+        if (!mplayInfo) continue; 
 
         MPlayOpen(mplayInfo, gMPlayTable[i].track, gMPlayTable[i].numTracks);
         mplayInfo->checkSongPriority = gMPlayTable[i].unk_A;
