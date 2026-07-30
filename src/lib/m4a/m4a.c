@@ -82,23 +82,52 @@ void MPlayFadeOut(struct MP2KPlayerState *mplayInfo, u16 speed)
     }
 }
 
+#include <android/log.h>
+
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "M4A", __VA_ARGS__)
+
 void m4aSoundInit(void)
 {
     s32 i;
+
+    LOGI("m4aSoundInit: begin");
+
 #if PLATFORM_GBA
     CpuCopy32((void *)((s32)SoundMainRAM & ~1), SoundMainRAM_Buffer, sizeof(SoundMainRAM_Buffer));
 #endif
 
+    LOGI("Calling SoundInit");
     SoundInit(&gSoundInfo);
+
+    LOGI("Calling MPlayExtender");
     MPlayExtender(gCgbChans);
+
+    LOGI("Calling m4aSoundMode");
     m4aSoundMode(DEFAULT_SOUND_MODE);
 
+    LOGI("NUM_MUSIC_PLAYERS = %d", NUM_MUSIC_PLAYERS);
+    LOGI("gMPlayTable = %p", (void *)gMPlayTable);
+
     for (i = 0; i < NUM_MUSIC_PLAYERS; i++) {
+        LOGI("Player %d", i);
+
+        LOGI("  info      = %p", (void *)gMPlayTable[i].info);
+        LOGI("  track     = %p", (void *)gMPlayTable[i].track);
+        LOGI("  numTracks = %d", gMPlayTable[i].numTracks);
+
         struct MP2KPlayerState *mplayInfo = gMPlayTable[i].info;
+
+        LOGI("  Calling MPlayOpen...");
         MPlayOpen(mplayInfo, gMPlayTable[i].track, gMPlayTable[i].numTracks);
+
+        LOGI("  Setting checkSongPriority");
         mplayInfo->checkSongPriority = gMPlayTable[i].unk_A;
+
+        LOGI("  Setting memAccArea");
         mplayInfo->memAccArea = gMPlayMemAccArea;
     }
+
+    LOGI("m4aSoundInit: finished");
 }
 
 void m4aSoundMain(void) { SoundMain(); }
