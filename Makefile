@@ -42,7 +42,7 @@ else ifeq ($(PLATFORM),android)
   ANDROID_API      ?= 24
   ANDROID_TOOLCHAIN := $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/bin
   export PATH := $(ANDROID_TOOLCHAIN):$(PATH)
-  PREFIX := aarch64-linux-android$(ANDROID_API)-
+  PREFIX := armv7a-linux-android$(ANDROID_API)-
 # x86
 else ifeq ($(CPU_ARCH),i386)
   ifeq ($(PLATFORM),sdl_win32)
@@ -280,7 +280,7 @@ else
 		CPPFLAGS += -D TITLE_BAR=$(BUILD_NAME).$(PLATFORM) -D PLATFORM_GBA=0 -D PLATFORM_SDL=1 -D PLATFORM_WIN32=0 $(shell sdl2-config --cflags)
 	else ifeq ($(PLATFORM),android)
 		CC1FLAGS += -Wno-parentheses-equality -Wno-unused-value -fPIC
-		CPPFLAGS += -D PLATFORM_GBA=0 -D PLATFORM_SDL=1 -D PLATFORM_WIN32=0 -D ANDROID -D __ANDROID__ $(ANDROID_SDL_FLAGS) --target=aarch64-linux-android$(ANDROID_API) --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot
+		CPPFLAGS += -D PLATFORM_GBA=0 -D PLATFORM_SDL=1 -D PLATFORM_WIN32=0 -D ANDROID -D __ANDROID__ $(ANDROID_SDL_FLAGS) --target=armv7a-linux-android$(ANDROID_API) --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot
 	else ifeq ($(PLATFORM),sdl_psp)
 		CC1FLAGS += -G0
 		CPPFLAGS += -D PLATFORM_GBA=0 -D PLATFORM_SDL=1 -D PLATFORM_WIN32=0 -D SDL_MAIN_HANDLED -I$(PSPDEV)/psp/include/SDL2 -I$(PSPDEV)/psp/include -I$(PSPSDK)/include -D_PSP_FW_VERSION=600
@@ -342,7 +342,7 @@ else
   ifeq ($(PLATFORM), sdl)
     CPP := $(CC1) -E
   else ifeq ($(PLATFORM),android)
-    ASFLAGS  += -c --target=aarch64-linux-android$(ANDROID_API) --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fPIC
+    ASFLAGS  += -c --target=armv7a-linux-android$(ANDROID_API) --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fPIC
     # Changed CC1FLAGS to CFLAGS so the compiler actually reads it
     CFLAGS   += -fPIC -fno-common
     CXXFLAGS += -fPIC -fno-common
@@ -378,7 +378,7 @@ ifeq ($(PLATFORM),gba)
 else ifeq ($(PLATFORM),sdl)
     LIBS := $(shell sdl2-config --cflags --libs) $(LIBABGSYSCALL_LIBS) -lm
 else ifeq ($(PLATFORM),android)
-    LIBS := --target=aarch64-linux-android$(ANDROID_API) --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
+    LIBS := --target=armv7a-linux-android$(ANDROID_API) --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
             -shared -uANativeActivity_onCreate \
             -L$(ANDROID_SDL_DIR)/build/intermediates -lSDL2 -llog -landroid \
             $(LIBABGSYSCALL_LIBS) -lm
