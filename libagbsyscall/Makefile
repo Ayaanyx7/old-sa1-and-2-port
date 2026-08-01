@@ -51,7 +51,7 @@ else ifeq ($(PLATFORM),android)
   ANDROID_NDK_HOME ?= $(ANDROID_NDK_ROOT)
   ANDROID_API      ?= 24
   export PATH := $(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/bin:$(PATH)
-  PREFIX := aarch64-linux-android$(ANDROID_API)-
+  PREFIX := armv7a-linux-android$(ANDROID_API)-
 else ifneq ($(PLATFORM),sdl)
    $(error Unknown CPU architecture $(CPU_ARCH))
 endif # (PLATFORM == gba)
@@ -119,11 +119,11 @@ ifeq ($(PLATFORM),android)
         LD      := $(CC1)
         AS      := $(CC1)
 
-        CC1FLAGS += --target=aarch64-linux-android$(ANDROID_API) \
+        CC1FLAGS += --target=armv7a64-linux-android$(ANDROID_API) \
                     --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
                     -fPIC
 
-        ASFLAGS += --target=aarch64-linux-android$(ANDROID_API) \
+        ASFLAGS += --target=armv7a-linux-android$(ANDROID_API) \
                    --sysroot=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/linux-x86_64/sysroot \
                    -fPIC
 endif
