@@ -2,7 +2,10 @@ STD_REVERB = 0
 
 $(MID_BUILDDIR)/%.o: $(MID_SUBDIR)/%.s
 	@echo "$(AS) <flags> -I sound -o $@ $<"
-	@$(PREPROC) $< $(PLATFORM) "" | $(CPP) $(CPPFLAGS) - | $(AS) $(ASFLAGS) -o $@ -
+	@$(PREPROC) $< $(if $(filter android,$(PLATFORM)),sdl,$(PLATFORM)) "" | \
+	$(CPP) $(CPPFLAGS) - | \
+	sed -E 's/\.(word|quad)[[:space:]]+(mus_|se_)/.data \/\/ Stripped absolute reference to \2/' | \
+	$(AS) $(ASFLAGS) -o $@ -
 
     # Voicegroup (-G) 003 in SA2!
 $(MID_SUBDIR)/se_ring_copy.s: %.s: %.mid
