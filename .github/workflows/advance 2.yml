@@ -44,8 +44,8 @@ jobs:
           export NDK_TOOLCHAIN=$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin
           
           make android GAME_NAME=sa2 GAME_REGION=USA PORTABLE=1 \
-            CC=$NDK_TOOLCHAIN/aarch64-linux-android24-clang \
-            CXX=$NDK_TOOLCHAIN/aarch64-linux-android24-clang++ \
+            CC=$NDK_TOOLCHAIN/armv7a-linux-android24-clang \
+            CXX=$NDK_TOOLCHAIN/armv7a-linux-android24-clang++ \
             AR=$NDK_TOOLCHAIN/llvm-ar \
             STRIP=$NDK_TOOLCHAIN/llvm-strip
 
@@ -103,7 +103,7 @@ jobs:
       - name: Package Android APK via Gradle
         working-directory: ./android-project
         run: |
-          ./gradlew assembleDebug --no-build-cache
+          ./gradlew assembleRelease --no-build-cache
       # STAGE 3: Extract the finished installation file out of GitHub Actions
       - name: Upload Completed Installable APK
         uses: actions/upload-artifact@v4
