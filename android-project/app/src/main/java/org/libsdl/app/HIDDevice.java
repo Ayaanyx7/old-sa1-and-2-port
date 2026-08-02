@@ -1,4 +1,4 @@
-package org.libsdl.app;
+package org.sega.sonicadv2;
 
 import android.hardware.usb.UsbDevice;
 
