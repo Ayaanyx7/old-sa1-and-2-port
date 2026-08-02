@@ -1,4 +1,4 @@
-package org.sega.sonicadv1;
+package org.libsdl.app;
 
 import android.content.Context;
 import android.media.AudioDeviceCallback;
