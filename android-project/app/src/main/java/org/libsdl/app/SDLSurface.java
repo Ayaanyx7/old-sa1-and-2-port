@@ -1,4 +1,4 @@
-package org.sega.sonicadv2;
+package org.libsdl.app;
 
 
 import android.content.Context;
