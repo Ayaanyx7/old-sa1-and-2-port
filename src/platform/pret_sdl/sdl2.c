@@ -612,9 +612,34 @@ void ProcessSDLEvents(void)
                     case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    keys &= ~DPAD_RIGHT; break;
                 }
                 break;
-            // >>> END OF NEW CONTROLLER CODE <<<
 
-            // Your original code continues completely untouched below:
+            case SDL_CONTROLLERAXISMOTION:
+{
+    const int DEADZONE = 8000;
+
+    switch (event.caxis.axis)
+    {
+        case SDL_CONTROLLER_AXIS_LEFTX:
+            keys &= ~(DPAD_LEFT | DPAD_RIGHT);
+
+            if (event.caxis.value < -DEADZONE)
+                keys |= DPAD_LEFT;
+            else if (event.caxis.value > DEADZONE)
+                keys |= DPAD_RIGHT;
+            break;
+
+        case SDL_CONTROLLER_AXIS_LEFTY:
+            keys &= ~(DPAD_UP | DPAD_DOWN);
+
+            if (event.caxis.value < -DEADZONE)
+                keys |= DPAD_UP;
+            else if (event.caxis.value > DEADZONE)
+                keys |= DPAD_DOWN;
+            break;
+    }
+    break;
+}
+            // >>> END OF NEW CONTROLLER CODE
             case SDL_QUIT:
                 isRunning = false;
                 break;
