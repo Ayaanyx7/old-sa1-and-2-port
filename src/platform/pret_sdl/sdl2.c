@@ -583,35 +583,13 @@ void ProcessSDLEvents(void)
                 }
                 break;
 
-            case SDL_CONTROLLERBUTTONDOWN:
-                switch (event.cbutton.button) {
-                    case SDL_CONTROLLER_BUTTON_A:             keys |= A_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_B:             keys |= B_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_START:         keys |= START_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_BACK:          keys |= SELECT_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  keys |= L_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: keys |= R_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_UP:       keys |= DPAD_UP; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     keys |= DPAD_DOWN; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     keys |= DPAD_LEFT; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    keys |= DPAD_RIGHT; break;
-                }
-                break;
+        case SDL_CONTROLLERBUTTONDOWN:
+            SDL_Log("Button %d pressed", event.cbutton.button);
+            break;
 
-            case SDL_CONTROLLERBUTTONUP:
-                switch (event.cbutton.button) {
-                    case SDL_CONTROLLER_BUTTON_A:             keys &= ~A_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_B:             keys &= ~B_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_START:         keys &= ~START_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_BACK:          keys &= ~SELECT_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  keys &= ~L_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: keys &= ~R_BUTTON; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_UP:       keys &= ~DPAD_UP; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     keys &= ~DPAD_DOWN; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     keys &= ~DPAD_LEFT; break;
-                    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    keys &= ~DPAD_RIGHT; break;
-                }
-                break;
+        case SDL_CONTROLLERBUTTONUP:
+            SDL_Log("Button %d released", event.cbutton.button);
+            break;
             // >>> END OF NEW CONTROLLER CODE <<<
 
             // Your original code continues completely untouched below:
