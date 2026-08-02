@@ -559,12 +559,62 @@ void Platform_QueueAudio(const s16 *data, uint32_t bytesCount)
 void ProcessSDLEvents(void)
 {
     SDL_Event event;
+    
+    // >>> ADD THIS LINE HERE <<<
+    static SDL_GameController* active_gamepad = NULL;
 
     while (SDL_PollEvent(&event)) {
         SDL_Keycode keyCode = event.key.keysym.sym;
         Uint16 keyMod = event.key.keysym.mod;
 
         switch (event.type) {
+            
+            // >>> PASTE ALL OF THESE CONTROLLER CASES HERE <<<
+            case SDL_CONTROLLERDEVICEADDED:
+                if (!active_gamepad) {
+                    active_gamepad = SDL_GameControllerOpen(event.cdevice.which);
+                }
+                break;
+
+            case SDL_CONTROLLERDEVICEREMOVED:
+                if (active_gamepad) {
+                    SDL_GameControllerClose(active_gamepad);
+                    active_gamepad = NULL;
+                }
+                break;
+
+            case SDL_CONTROLLERBUTTONDOWN:
+                switch (event.cbutton.button) {
+                    case SDL_CONTROLLER_BUTTON_A:             keys |= A_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_B:             keys |= B_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_START:         keys |= START_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_BACK:          keys |= SELECT_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  keys |= L_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: keys |= R_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_UP:       keys |= DPAD_UP; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     keys |= DPAD_DOWN; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     keys |= DPAD_LEFT; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    keys |= DPAD_RIGHT; break;
+                }
+                break;
+
+            case SDL_CONTROLLERBUTTONUP:
+                switch (event.cbutton.button) {
+                    case SDL_CONTROLLER_BUTTON_A:             keys &= ~A_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_B:             keys &= ~B_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_START:         keys &= ~START_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_BACK:          keys &= ~SELECT_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  keys &= ~L_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: keys &= ~R_BUTTON; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_UP:       keys &= ~DPAD_UP; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     keys &= ~DPAD_DOWN; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     keys &= ~DPAD_LEFT; break;
+                    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    keys &= ~DPAD_RIGHT; break;
+                }
+                break;
+            // >>> END OF NEW CONTROLLER CODE <<<
+
+            // Your original code continues completely untouched below:
             case SDL_QUIT:
                 isRunning = false;
                 break;
