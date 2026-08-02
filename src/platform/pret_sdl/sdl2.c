@@ -571,10 +571,17 @@ void ProcessSDLEvents(void)
             
             // >>> PASTE ALL OF THESE CONTROLLER CASES HERE <<<
             case SDL_CONTROLLERDEVICEADDED:
-                if (!active_gamepad) {
-                    active_gamepad = SDL_GameControllerOpen(event.cdevice.which);
-                }
-                break;
+    SDL_Log("Controller added: %d", event.cdevice.which);
+
+    if (!active_gamepad) {
+        active_gamepad = SDL_GameControllerOpen(event.cdevice.which);
+
+        if (active_gamepad)
+            SDL_Log("Opened controller: %s", SDL_GameControllerName(active_gamepad));
+        else
+            SDL_Log("Open failed: %s", SDL_GetError());
+    }
+    break;
 
             case SDL_CONTROLLERDEVICEREMOVED:
                 if (active_gamepad) {
