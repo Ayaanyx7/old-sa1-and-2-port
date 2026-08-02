@@ -1,4 +1,4 @@
-package org.libsdl.app;
+package org.sega.sonicadv1;
 
 import java.util.ArrayList;
 import java.util.Collections;
