@@ -1,4 +1,4 @@
-package org.sega.sonicadv1;
+package org.libsdl.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
