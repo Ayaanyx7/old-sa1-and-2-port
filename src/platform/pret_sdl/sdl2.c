@@ -591,12 +591,37 @@ void ProcessSDLEvents(void)
                 break;
 
         case SDL_CONTROLLERBUTTONDOWN:
-            SDL_Log("Button %d pressed", event.cbutton.button);
-            break;
+    switch (event.cbutton.button) {
+        case SDL_CONTROLLER_BUTTON_A:             REG_KEYINPUT &= ~A_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_B:             REG_KEYINPUT &= ~B_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_BACK:          REG_KEYINPUT &= ~SELECT_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_START:         REG_KEYINPUT &= ~START_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_UP:       REG_KEYINPUT &= ~DPAD_UP; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     REG_KEYINPUT &= ~DPAD_DOWN; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     REG_KEYINPUT &= ~DPAD_LEFT; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    REG_KEYINPUT &= ~DPAD_RIGHT; break;
+        case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  REG_KEYINPUT &= ~L_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: REG_KEYINPUT &= ~R_BUTTON; break;
+        default: break;
+    }
+    break;
 
-        case SDL_CONTROLLERBUTTONUP:
-            SDL_Log("Button %d released", event.cbutton.button);
-            break;
+case SDL_CONTROLLERBUTTONUP:
+    switch (event.cbutton.button) {
+        case SDL_CONTROLLER_BUTTON_A:             REG_KEYINPUT |= A_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_B:             REG_KEYINPUT |= B_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_BACK:          REG_KEYINPUT |= SELECT_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_START:         REG_KEYINPUT |= START_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_UP:       REG_KEYINPUT |= DPAD_UP; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_DOWN:     REG_KEYINPUT |= DPAD_DOWN; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_LEFT:     REG_KEYINPUT |= DPAD_LEFT; break;
+        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:    REG_KEYINPUT |= DPAD_RIGHT; break;
+        case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:  REG_KEYINPUT |= L_BUTTON; break;
+        case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: REG_KEYINPUT |= R_BUTTON; break;
+        default: break;
+    }
+    break;
+
             // >>> END OF NEW CONTROLLER CODE <<<
 
             // Your original code continues completely untouched below:
